@@ -16,6 +16,7 @@ import org.springframework.web.servlet.ModelAndView;
 
 import com.spring.main.dao.ResultInterface;
 import com.spring.main.dto.EntirelyDto;
+import com.spring.main.dto.MatchDto;
 import com.spring.main.dto.ResultDto;
 import com.spring.main.util.EmailTest;
 import com.spring.main.util.ResultEmail;
@@ -116,7 +117,8 @@ public class ResultService {
 		for(int i=0; i<result.size(); i++){
 			String email = result.get(i).getU_mail();
 			String idx = result.get(i).getTotalIdx();
-			String content = "<button type='button' onclick='location.href='http://localhost:8080/main/result/result?idx="+idx+"''>결과입력</button>";
+			String t_idx = result.get(i).getT_idx();
+			String content = "<button type='button' onclick='location.href='http://localhost:8080/main/result/result?idx="+idx+"&t_idx='"+t_idx+"'>결과입력</button>";
 			try {
 				mail.gmailtest(email, content);
 			} catch (Exception e) {
@@ -124,6 +126,87 @@ public class ResultService {
 			}
 		}
 		
+	}
+
+	//경기결과
+	public ModelAndView eva(Map<String, String> params) {
+		inter = sqlSession.getMapper(ResultInterface.class);
+		ModelAndView mav = new ModelAndView();
+		String t_idx = params.get("t_idx");
+		String idx = params.get("idx");
+		
+		mav.addObject("result", inter.eva(idx));
+		mav.addObject("t_idx", inter.mail(t_idx));
+		mav.setViewName("result");
+		return mav;
+	}
+
+	//평가정보넣기
+	public ModelAndView evaUp(Map<String, String> params) {
+		inter = sqlSession.getMapper(ResultInterface.class);
+		ModelAndView mav = new ModelAndView();
+		String mch_idx = params.get("mch_idx");
+		String t_idx = params.get("t_idx");
+		String eva = params.get("eva");
+		String e_difference = params.get("e_difference");
+		inter.entirely(t_idx,mch_idx,e_difference);
+		ArrayList<EntirelyDto> ent = inter.entDto(mch_idx);
+		String con1 = ent.get(0).getE_condition();
+		String con2 = ent.get(1).getE_condition();
+		String dif1 = ent.get(0).getE_difference();
+		String dif2 = ent.get(1).getE_difference();
+		if(con1.equals(con2)){
+			if(dif1.equals(dif2)){
+				inter.end(mch_idx);
+				String[] score = dif1.split(":");
+				String team =  ent.get(0).getE_team();
+				String[] tname = team.split(":");
+				if(Integer.parseInt(score[0])>Integer.parseInt(score[1])){
+					logger.info(score[0]);
+					inter.rankpoint(3,"t_win",tname[0]);
+					inter.rankpoint(1,"t_lose",tname[1]);
+				}else if(score[0].equals(score[1])){
+					inter.rankpoint(2,"t_draw",tname[0]);
+					inter.rankpoint(2,"t_draw",tname[1]);
+				}else{
+					logger.info(score[1]);
+					inter.rankpoint(1,"t_win",tname[0]);
+					inter.rankpoint(3,"t_lose",tname[1]);
+				}
+			}else{
+				if(!ent.get(0).getE_mail().equals("3")){
+					inter.reset(mch_idx);
+					ResultEmail mail = new ResultEmail();
+					for(int i=0; i<2; i++){
+						String team = ent.get(i).getT_idx();
+						ResultDto result = inter.email(team);
+						String email = result.getU_mail();
+						String content = "<button type='button' onclick='location.href='http://localhost:8080/main/result/result?idx="+mch_idx+"&t_idx='"+team+"'>결과입력</button>";
+						try {
+							mail.gmailtest(email, content);
+						} catch (Exception e) {
+							e.printStackTrace();
+						}
+					}
+				}else{
+					inter.difference("0:0",mch_idx);
+					String team =  ent.get(0).getE_team();
+					String[] tname = team.split(":");
+					inter.rankpoint(2,"t_draw",tname[0]);
+					inter.rankpoint(2,"t_draw",tname[1]);
+				}
+			}
+		}
+		if(eva.equals("0")){
+			String ev_name = params.get("ev_name");
+			String ev_manner = params.get("ev_manner");
+			String ev_level = params.get("ev_level");
+			String ev_defe = params.get("ev_defe");
+			String ev_attk = params.get("ev_attk");
+			inter.evalue(t_idx,ev_name,ev_manner,ev_level,ev_defe,ev_attk);
+		}
+		mav.setViewName("redirect:../");
+		return mav;
 	}
 
 }

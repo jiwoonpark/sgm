@@ -56,6 +56,10 @@
 				position: absolute;
 				z-index: 11;
 			}
+			#button{
+				float: right;
+				padding-right: 10px;
+			}
 		</style>
 		<style>
 			.star-input>.input,
@@ -214,7 +218,7 @@
 									    <input type="radio" name="star-input" id="p8" value="8"><label for="p8">8</label>
 									    <input type="radio" name="star-input" id="p9" value="9"><label for="p9">9</label>
 									    <input type="radio" name="star-input" id="p10" value="10"><label for="p10">10</label>
-									 </span><b id="value">0</b>점</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+									 </span><b id="value"></b></span>
 									 <span id="button"></span>
 								</td>
 							</tr>
@@ -265,11 +269,16 @@
 	<script>
 	var user="${sessionScope.userName}(${sessionScope.userId})";
 	var value = 0;
+	var a_evalunum = "${detail.a_evalunum}";
+	var a_total = "${detail.a_total}";
 	areaSearch("${detail.a_lat}", "${detail.a_lng}");
 	cancel();
 	function cancel(){
-		$("input[value='6']").attr("checked","checked");
-		$("#value").text(6);
+		if(a_total!=0){
+			a_total = parseInt(a_total/a_evalunum);
+		}
+		$("input[id='p"+a_total+"']").attr("checked","checked");
+		$("#value").text(a_total+"점/"+a_evalunum+"명");
 		$("#stop").css("display","block");
 		var content = "<a onclick='button()' style='cursor: pointer;'>별점주기</a>";
 		$("#button").empty();
@@ -280,14 +289,14 @@
 	$("input[name='star-input']").change(function(){
 		value = $("input[name='star-input']:checked").val();
 		console.log(value);
-		$("#value").text(value);
+		$("#value").text(value+"점");
 		
 	});
 	
 	//별점버튼
 	function button(){
 		$("#stop").css("display","none");
-		$("#value").text(0);
+		$("#value").text(0+"점");
 		$("input[name='star-input']").removeAttr("checked");
 		var content = "<a onclick='insert()' style='cursor: pointer;'>등록</a>/<a onclick='cancel()' style='cursor: pointer;'>취소</a>";
 		$("#button").empty();
@@ -301,6 +310,7 @@
 		var url="./star";
 		var data={};
 		data.value = value;
+		data.idx = "${detail.a_idx}";
 		reqServer(url, data);
 	}
 	
@@ -389,6 +399,9 @@
 					console.log("댓글 삭제");
 					replyList();
 				}else{
+					console.log(d);
+					a_total=d.a_total;
+					a_evalunum=d.a_evalunum;
 					cancel();
 				}
 			},
@@ -397,39 +410,7 @@
 			}
 		});
 	} 
-	//별점
-	// star rating
-var starRating = function(){
-  var $star = $(".star-input"),
-      $result = $star.find("output>b");
-  $(document)
-    .on("focusin", ".star-input>.input", function(){
-    $(this).addClass("focus");
-  })
-    .on("focusout", ".star-input>.input", function(){
-    var $this = $(this);
-    setTimeout(function(){
-      if($this.find(":focus").length === 0){
-        $this.removeClass("focus");
-      }
-    }, 100);
-  })
-    .on("change", ".star-input :radio", function(){
-    $result.text($(this).next().text());
-  })
-    .on("mouseover", ".star-input label", function(){
-    $result.text($(this).text());
-  })
-    .on("mouseleave", ".star-input>.input", function(){
-    var $checked = $star.find(":checked");
-    if($checked.length === 0){
-      $result.text("0");
-    } else {
-      $result.text($checked.next().text());
-    }
-  });
-};
-starRating();
+	
 	</script>			
 					
 </html>

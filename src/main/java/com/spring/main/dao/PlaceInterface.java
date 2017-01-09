@@ -44,6 +44,9 @@ public interface PlaceInterface {
 	//글삭제
 	int a_delete(String idx);
 
+	//별점등록
+	int star(String value, String idx);
+
 	
 	
 }

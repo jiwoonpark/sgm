@@ -4,11 +4,14 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.apache.ibatis.session.SqlSession;
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import org.springframework.web.bind.annotation.RequestParam;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
@@ -230,6 +233,18 @@ public class PlaceService {
 		mav.setViewName("redirect:placeList");
 		
 		return mav;
+	}
+
+
+	//별점등록
+	public PlaceDto star(Map<String, String>params) {
+		inter=sqlSession.getMapper(PlaceInterface.class);
+		String value = (String)params.get("value");
+		String idx = (String)params.get("idx");
+		
+		inter.star(value,idx);
+		PlaceDto star =inter.a_detail(idx);
+		return star;
 	}
 	
 

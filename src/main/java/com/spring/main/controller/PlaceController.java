@@ -3,6 +3,8 @@ package com.spring.main.controller;
 
 import java.util.Map;
 
+import javax.servlet.http.HttpSession;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -13,6 +15,7 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.multipart.MultipartHttpServletRequest;
 import org.springframework.web.servlet.ModelAndView;
 
+import com.spring.main.dto.PlaceDto;
 import com.spring.main.service.PlaceService;
 
 @Controller("PlaceController")
@@ -80,6 +83,13 @@ public class PlaceController {
 	public ModelAndView delete(@RequestParam("idx") String idx) {
 		logger.info("장소삭제");
 		return service.delete(idx);
+	}
+	
+	//별점등록
+	@RequestMapping(value = "/star")
+	public  @ResponseBody PlaceDto star(@RequestParam Map<String, String> params) {
+		logger.info("별점등록");
+		return service.star(params);
 	}
 		
 }

@@ -55,10 +55,15 @@
 		#{param4},#{param5},0,0,0,0,#{param6},#{param7},#{param8},#{param9})
 	</insert> 
 
-	<!--  매칭 상세보기  --> 
+	<!--  장소 상세보기  --> 
 	<select id="a_detail" resultType="com.spring.main.dto.PlaceDto">
 		SELECT * FROM area WHERE a_idx = #{param1}
 	</select> 
+	
+	<!-- 조회수 올리기 -->
+	<update id="upHit">
+		UPDATE area SET a_vcount = a_vcount+1 WHERE a_idx = #{param1}
+	</update>
 	
 	<!-- 글수정 -->
 	<update id="a_modify">
@@ -76,6 +81,11 @@
 	<delete id="a_delete">
 		DELETE FROM area WHERE a_idx = #{param1}
 	</delete>
+	
+	<!-- 별점등록 -->
+	<update id="star">
+		UPDATE area SET a_total = a_total+#{param1},a_evalunum = a_evalunum+1 WHERE a_idx = #{param2}
+	</update>
 	
 	
 	
