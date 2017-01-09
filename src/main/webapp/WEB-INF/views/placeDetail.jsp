@@ -215,7 +215,7 @@
 									    <input type="radio" name="star-input" id="p9" value="9"><label for="p9">9</label>
 									    <input type="radio" name="star-input" id="p10" value="10"><label for="p10">10</label>
 									 </span><b id="value">0</b>점</span>&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
-									 <span id="button"><a onclick="button()" style="cursor: pointer;">별점주기</a></span>
+									 <span id="button"></span>
 								</td>
 							</tr>
 							<tr class="borderBottom">
@@ -264,15 +264,21 @@
 	</body>
 	<script>
 	var user="${sessionScope.userName}(${sessionScope.userId})";
+	var value = 0;
 	areaSearch("${detail.a_lat}", "${detail.a_lng}");
-	$(document).ready(function(){
+	cancel();
+	function cancel(){
 		$("input[value='6']").attr("checked","checked");
 		$("#value").text(6);
-	});
+		$("#stop").css("display","block");
+		var content = "<a onclick='button()' style='cursor: pointer;'>별점주기</a>";
+		$("#button").empty();
+		$("#button").append(content);
+	}
 	
 	//별점값
 	$("input[name='star-input']").change(function(){
-		var value = $("input[name='star-input']:checked").val();
+		value = $("input[name='star-input']:checked").val();
 		console.log(value);
 		$("#value").text(value);
 		
@@ -281,10 +287,21 @@
 	//별점버튼
 	function button(){
 		$("#stop").css("display","none");
+		$("#value").text(0);
+		$("input[name='star-input']").removeAttr("checked");
 		var content = "<a onclick='insert()' style='cursor: pointer;'>등록</a>/<a onclick='cancel()' style='cursor: pointer;'>취소</a>";
 		$("#button").empty();
 		$("#button").append(content);
 		
+	}
+	
+	//별점등록
+	function insert(){
+		console.log("별점등록");
+		var url="./star";
+		var data={};
+		data.value = value;
+		reqServer(url, data);
 	}
 	
 	function reple(){
@@ -371,6 +388,8 @@
 				}else if(url=="../replyDel"){
 					console.log("댓글 삭제");
 					replyList();
+				}else{
+					cancel();
 				}
 			},
 			error:function(error){

@@ -3,6 +3,7 @@ package com.spring.main.dao;
 import java.util.ArrayList;
 
 import com.spring.main.dto.EntirelyDto;
+import com.spring.main.dto.ResultDto;
 
 public interface ResultInterface {
 
@@ -14,5 +15,7 @@ public interface ResultInterface {
 
 	//t_rankpoint
 	void rankpoint(int t_rankpoint, String result, String t_name);
+
+	ArrayList<ResultDto> result(String time);
 
 }

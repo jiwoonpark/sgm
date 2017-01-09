@@ -152,7 +152,6 @@ public class VidioService {
 		public ModelAndView modify(MultipartHttpServletRequest multi) {
 			ModelAndView mav = new ModelAndView();
 			vidio=sqlSession.getMapper(TdInterface.class);
-			int success=0;
 			String idx = multi.getParameter("idx");
 			String j_title = multi.getParameter("j_title");
 			String j_content = multi.getParameter("j_content");
@@ -160,7 +159,7 @@ public class VidioService {
 			logger.info(fileName);
 			String newfileName = "";
 			Map<String, ArrayList<String>> newFile = new HashMap<String, ArrayList<String>>();
-			success = vidio.update(idx, j_title, j_content);
+			vidio.update(idx, j_title, j_content);
 			if(!fileName.equals("")){
 				String[] delName = vidio.fileDelName(idx);
 				//파일 업로드
@@ -173,8 +172,7 @@ public class VidioService {
 				}
 			}
 			
-			mav.addObject("success",success);
-			mav.setViewName("redirect:placeList");
+			mav.setViewName("redirect:vidioList");
 			logger.info("장소수정");
 			return mav;
 		}
@@ -198,7 +196,7 @@ public class VidioService {
 					}				
 				}
 			}
-			mav.setViewName("redirect:placeList");
+			mav.setViewName("redirect:vidioList");
 			
 			return mav;
 		}

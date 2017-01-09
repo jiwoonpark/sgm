@@ -46,11 +46,8 @@
 				<fieldset>
 					<legend>글수정</legend>
 				</fieldset>
-					<form action="update" method="post">
+					<form action="modify" method="post" enctype="multipart/form-data">
 						<table class="detailTable">
-								<tr class="borderTop">
-									<td><input type="text" name=""/></td>
-								</tr>
 								<tr class="borderTop">
                            			<td><input type="text" name="j_title" value="${content.j_title}"/></td>
                         		</tr>
@@ -67,7 +64,8 @@
                         		</tr>
                         		<tr class="borderTop">
 									<td>
-										<input type="file" name=""/>
+										<input type="file" name="file" onchange="fileView(this)"/>
+										<input id="fileName" type="hidden" name="fileName"/>
 									</td>
 								</tr>
                         		<tr class="borderTop">
@@ -87,6 +85,14 @@
 		<jsp:include page="../../resources/include/footer.jsp" />
 	</body>
 	<script>
-	
+	//파일이름추출
+	function fileView(elem){
+		console.log(elem);
+		console.log(elem.value);
+		var fullPath = elem.value;
+		fileName = fullPath.substring(12);
+		console.log(fileName);
+		$("#fileName").val(fileName);
+	}
 	</script>
 </html>
