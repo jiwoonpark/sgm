@@ -85,14 +85,14 @@ public class MainController {
 	@RequestMapping(value="/overlay")
 	public @ResponseBody Map<String, String> overlay(@RequestParam("id") String id){
 		logger.info("아이디 중복체크");
-		return service.overlay(id);
+		return service.overlay(id);//request로 받아온 id를 갖고 서비스에 이동
 	}
 	
-	//메일 인증번호
+	//메일 인증번호 발송
 	@RequestMapping(value="/certification")
 	public @ResponseBody Map<String, String> certification(@RequestParam("mail") String mail){
 		logger.info("인증번호");
-		return service.certification(mail);
+		return service.certification(mail);//request로 받아온 이메일을 갖고 서비스에 이동 
 	}
 	
 	

@@ -31,7 +31,7 @@ public class BoardService {
 	
 	BoardInterface inter = null;
 	
-	private String authNum="";
+	private String authNum="";//인증번호
 	
 	//로그인 처리
 	public ModelAndView login(Map<String, Object> params) {
@@ -84,11 +84,11 @@ public class BoardService {
 			inter = sqlSession.getMapper(BoardInterface.class);
 			Map<String, String> json = new HashMap<String, String>();
 			logger.info("id중복확인");
-			String use = "N";
-			if(inter.overlay(u_id) == null){
+			String use = "N"; //사용가능=Y, 사용불가능=N
+			if(inter.overlay(u_id) == null){//입력한 ID를 DB에 조회, 조회결과에 따라 사용가능한지 판단
 				use = "Y";
 			}
-			json.put("use", use);
+			json.put("use", use);//json에 use값 넣기
 			
 			logger.info("id중복확인");
 			
@@ -147,11 +147,11 @@ public class BoardService {
 		//인증번호
 		public Map<String, String> certification(String email) {
 			EmailTest mail = new EmailTest();
-			String success="인증번호가 보내지지 않았습니다.";
+			String success="인증번호가 보내지지 않았습니다."; // 메세지
 			Map<String, String> map = new HashMap<String, String>();
-			authNum=RandomNum();
+			authNum=RandomNum(); //랜덤으로 7가지 숫자를 담은 인증번호
 			try {
-				success = mail.gmailtest(email, authNum);
+				success = mail.gmailtest(email, authNum); //관리자의 gmail로 유저의 mail에 인증번호를 보냄
 			} catch (Exception e) {
 				e.printStackTrace();
 			}
@@ -163,7 +163,7 @@ public class BoardService {
 		//인증번호 확인
 		public Map<String, String> certificationCheck(String num) {
 			Map<String, String> map = new HashMap<String, String>();
-			String result="N";
+			String result="N"; // 결과-> 일치하면Y, 일치하지 않으면N
 			if(authNum.equals(num)){
 				result="Y";
 			}
@@ -177,12 +177,12 @@ public class BoardService {
 		//랜덤(인증번호)
 		private String RandomNum() {
 			StringBuffer buffer = new StringBuffer();
-			//인증번호 수
-			for(int i=0; i<7; i++){
+			for(int i=0; i<7; i++){//for문의 반복횟수로 인증번호의 자리수가 결정
 				int n=(int)(Math.random()*10);
-				buffer.append(n);
+				buffer.append(n);// n을 문자열로 buffer에 추가
+				//1->10->105->1057...
 			}
-			return buffer.toString();
+			return buffer.toString();//String형태로 변환
 		}
 
 		//마이페이지(회원 정보 불러오기)/수정페이지(회원정보 수정)

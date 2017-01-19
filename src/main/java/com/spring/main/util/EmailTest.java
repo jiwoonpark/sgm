@@ -16,7 +16,7 @@ public class EmailTest {
    public String gmailtest(String email, String authNum) throws Exception{
         
         // 메일 관련 정보
-        final String username="2wnaud";
+        final String username="2wnaud"; //google 이메일 계정에서 @앞부분만 기재합니다.
     	final String password="dlwnaud9705dltka";  //google 이메일 비밀번호를 기재합니다.
         
          
@@ -42,7 +42,7 @@ public class EmailTest {
 		System.out.println("??");
 		try{
 			Message message = new MimeMessage(session); 
-			message.setFrom(new InternetAddress("2wnaud@gmail.com"));// 
+			message.setFrom(new InternetAddress("2wnaud@gmail.com"));// 발송자의 메일명
 			message.setRecipients(Message.RecipientType.TO,
  InternetAddress.parse(email)); 
 			message.setSubject("SGM 인증번호입니다.");//제목
@@ -51,7 +51,7 @@ public class EmailTest {
  //message.setContent("내용","text/html; charset=utf-8");//글내용을 html타입 charset설정
 			
 			System.out.println("send!!!");
-			Transport.send(message);
+			Transport.send(message);//메일 발송
 			System.out.println("SEND");
 			
 		} catch(Exception e){
